@@ -23,6 +23,7 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT!);
 
-  console.log(process.env.MONGODB_CONNECT)
+  console.log(process.env.PORT);
+  console.log(process.env.MONGODB_CONNECT);
 }
 bootstrap();

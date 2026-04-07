@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateChantDto } from './dto/create-chant.dto';
 import { UpdateChantDto } from './dto/update-chant.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -10,25 +10,42 @@ export class ChantsService {
   constructor(
     @InjectModel(Chant.name)
     private chantModel: Model<ChantDocument>,
-  ){}
-  
+  ) { }
+
   async create(dto: CreateChantDto) {
-    return this.chantModel.create(dto);
+    const slug = dto.title.toLowerCase().replace(/ /g, '-');
+    return this.chantModel.create({ ...dto, slug });
   }
 
-  async findAll() {
-    return this.chantModel.find();
+  async findAll(query: any) {
+    const filter: any = {};
+
+    if (query.category) filter.category = query.category;
+    if (query.tag) filter.tags = { $in: [query.tag] };
+    if (query.isPublished) filter.isPublished = query.isPublished === 'true';
+
+    return this.chantModel.find(filter).sort({ createdAt: -1 });
   }
 
   async findOne(id: string) {
-    return this.chantModel.findById(id);
+    const chant = await this.chantModel.findById(id);
+    if (!chant) throw new NotFoundException('Chant not found');
+    return chant;
   }
 
-  async update(id: string, dto: UpdateChantDto){
-    return this.chantModel.findByIdAndUpdate(id, dto);
+  async findBySlug(slug: string) {
+    return this.chantModel.findOne({ slug });
   }
 
-  async remove(id: number) {
-    return this.chantModel.findByIdAndDelete(id);
+  async update(id: string, dto: UpdateChantDto) {
+    const chant = await this.chantModel.findByIdAndUpdate(id, dto, { new: true });
+    if (!chant) throw new NotFoundException('Chant not found');
+    return chant;
+  }
+
+  async delete(id: string) {
+    const chant = await this.chantModel.findByIdAndDelete(id);
+    if (!chant) throw new NotFoundException('Chant not found');
+    return { message: 'Deleted successfully' };
   }
 }

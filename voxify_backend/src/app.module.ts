@@ -11,14 +11,14 @@ import Joi from 'joi';
     ConfigModule.forRoot({
       isGlobal: true,
       expandVariables: true,
-      envFilePath: '/.env',
+      envFilePath: '.env',
       validationSchema: Joi.object({
         PORT: Joi.number().required(),
         MONGODB_CONNECT: Joi.string().required(),
       })
     }),
     MongooseModule.forRoot(process.env.MONGODB_CONNECT!),
-    ChantsModule
+    ChantsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

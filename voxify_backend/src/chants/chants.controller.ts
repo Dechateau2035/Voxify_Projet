@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ChantsService } from './chants.service';
 import { CreateChantDto } from './dto/create-chant.dto';
 import { UpdateChantDto } from './dto/update-chant.dto';
 
 @Controller('chants')
 export class ChantsController {
-  constructor(private readonly chantsService: ChantsService) {}
+  constructor(private readonly chantsService: ChantsService) { }
 
   @Post()
   create(@Body() createChantDto: CreateChantDto) {
@@ -13,8 +13,13 @@ export class ChantsController {
   }
 
   @Get()
-  findAll() {
-    return this.chantsService.findAll();
+  findAll(@Query() query) {
+    return this.chantsService.findAll(query);
+  }
+
+  @Get('slug/:slug')
+  findBySlug(@Param('slug') slug: string) {
+    return this.chantsService.findBySlug(slug);
   }
 
   @Get(':id')
@@ -23,12 +28,12 @@ export class ChantsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChantDto: UpdateChantDto) {
-    return this.chantsService.update(id, updateChantDto);
+  update(@Param('id') id: string, @Body() dto: UpdateChantDto) {
+    return this.chantsService.update(id, dto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.chantsService.remove(+id);
+    return this.chantsService.delete(id);
   }
 }

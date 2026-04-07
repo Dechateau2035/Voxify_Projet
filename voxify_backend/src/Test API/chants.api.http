@@ -1,0 +1,41 @@
+### ==============================
+### CHANTS API TEST FILE (VS CODE REST CLIENT)
+### ==============================
+
+@baseUrl = http://localhost:3000
+@chantId = 69cca4baeede991acd62b667
+
+### 1. CREATE CHANT
+POST {{baseUrl}}/chants
+Content-Type: application/json
+
+{
+  "title": "Amazing Grace",
+  "category": "adoration",
+  "tags": ["lent", "classique"],
+  "isPublished": true
+}
+
+### 2. GET ALL CHANTS
+GET {{baseUrl}}/chants
+
+### 3. FILTER CHANTS
+GET {{baseUrl}}/chants?category=louange&tag=classique&isPublished=true
+
+### 4. GET CHANT BY ID
+GET {{baseUrl}}/chants/{{chantId}}
+
+### 5. GET CHANT BY SLUG
+GET {{baseUrl}}/chants/slug/amazing-grace
+
+### 6. UPDATE CHANT
+PATCH {{baseUrl}}/chants/{{chantId}}
+Content-Type: application/json
+
+{
+  "category": "louange",
+  "isPublished": false
+}
+
+### 7. DELETE CHANT
+DELETE {{baseUrl}}/chants/{{chantId}}

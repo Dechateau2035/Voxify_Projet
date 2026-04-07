@@ -1,4 +1,4 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsArray, IsBoolean } from 'class-validator';
 
 export class CreateChantDto {
   @IsString()
@@ -11,4 +11,12 @@ export class CreateChantDto {
   @IsOptional()
   @IsString()
   lyrics?: string;
+
+  @IsOptional()
+  @IsArray()
+  tags?: string[];
+
+  @IsOptional()
+  @IsBoolean()
+  isPublished?: boolean;
 }
