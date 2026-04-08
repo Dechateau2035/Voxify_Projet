@@ -5,6 +5,7 @@ import { ChantsModule } from './chants/chants.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
+import { CLoudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import Joi from 'joi';
     }),
     MongooseModule.forRoot(process.env.MONGODB_CONNECT!),
     ChantsModule,
+    CLoudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
