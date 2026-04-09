@@ -1,11 +1,33 @@
 @baseUrl = http://localhost:3000
 
+### Test upload Image
 POST {{baseUrl}}/upload
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary
 Content-Disposition: form-data; name="file"; filename="yess.jpg"
-Content-Type: image/jpeg
+Content-Type: image/jpg
 
 < ./yess.jpg
+--boundary--
+
+----
+### Test upload audio
+POST {{baseUrl}}/upload
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="audio.ogg"
+
+< ./audio.ogg
+--boundary--
+
+### Test upload PDF
+POST {{baseUrl}}/upload
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="Profile.pdf"
+
+< ./Profile.pdf
 --boundary--
