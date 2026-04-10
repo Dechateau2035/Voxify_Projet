@@ -3,9 +3,11 @@ import { ChantsService } from './chants.service';
 import { ChantsController } from './chants.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Chant, ChantSchema } from './entities/chant.entity';
+import { CLoudinaryModule } from 'src/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
+    CLoudinaryModule,
     MongooseModule.forFeature([
       { name: Chant.name, schema: ChantSchema }
     ])

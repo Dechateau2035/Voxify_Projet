@@ -13,7 +13,8 @@ export class ChantsService {
   ) { }
 
   async create(dto: CreateChantDto) {
-    const slug = dto.title.toLowerCase().replace(/ /g, '-');
+    
+    const slug = dto.title.toLowerCase().trim().replace(/ /g, '-');
     return this.chantModel.create({ ...dto, slug });
   }
 
