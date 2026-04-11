@@ -5,19 +5,17 @@ import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors(
-    {
-      origin: 'http://localhost:3000',
-      credentials: true,
-    }
-  );
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  });
 
   const configService = app.get(ConfigService);
 
   /*Configurartion de Swagger*/
   const config = new DocumentBuilder()
-    .setTitle('Voxify\'s API documentation')
-    .setDescription('La documentation complète de l\'API de Voxify')
+    .setTitle("Voxify's API documentation")
+    .setDescription("La documentation complète de l'API de Voxify")
     .setVersion('1.0')
     .build();
 

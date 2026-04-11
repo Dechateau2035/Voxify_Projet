@@ -17,12 +17,12 @@ import { UploadModule } from './upload/upload.module';
       validationSchema: Joi.object({
         PORT: Joi.number().required(),
         MONGODB_CONNECT: Joi.string().required(),
-      })
+      }),
     }),
     MongooseModule.forRoot(process.env.MONGODB_CONNECT!),
     ChantsModule,
     CLoudinaryModule,
-    UploadModule
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

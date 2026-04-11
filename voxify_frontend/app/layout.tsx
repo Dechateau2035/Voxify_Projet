@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   title: "Voxify",
   description: "Plateforme moderne de gestion de chants de chorale",
   icons: {
-    icon: [{ url: "/icon.png", type: "image/png" }],
-    apple: [{ url: "/icon.png", type: "image/png" }],
+    icon: [{ url: "/icon1.png", type: "image/png" }],
+    apple: [{ url: "/icon1.png", type: "image/png" }],
   },
 };
 

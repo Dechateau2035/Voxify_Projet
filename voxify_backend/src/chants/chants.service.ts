@@ -10,10 +10,13 @@ export class ChantsService {
   constructor(
     @InjectModel(Chant.name)
     private chantModel: Model<ChantDocument>,
-  ) { }
+  ) {}
 
   async create(dto: CreateChantDto) {
-    const slug = dto.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-');
+    const slug = dto.title
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-');
     return this.chantModel.create({ ...dto, slug });
   }
 
@@ -38,7 +41,9 @@ export class ChantsService {
   }
 
   async update(id: string, dto: UpdateChantDto) {
-    const chant = await this.chantModel.findByIdAndUpdate(id, dto, { new: true });
+    const chant = await this.chantModel.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
     if (!chant) throw new NotFoundException('Chant not found');
     return chant;
   }

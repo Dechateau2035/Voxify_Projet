@@ -36,7 +36,7 @@ export function AppNavbar() {
           onClick={() => setMobileOpen(false)}
         >
           <Image
-            src="/logo-voxify.png"
+            src="/logo-voxify1.png"
             alt="Voxify"
             width={220}
             height={48}

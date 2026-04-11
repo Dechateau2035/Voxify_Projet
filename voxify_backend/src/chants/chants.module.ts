@@ -8,9 +8,7 @@ import { CLoudinaryModule } from 'src/cloudinary/cloudinary.module';
 @Module({
   imports: [
     CLoudinaryModule,
-    MongooseModule.forFeature([
-      { name: Chant.name, schema: ChantSchema }
-    ])
+    MongooseModule.forFeature([{ name: Chant.name, schema: ChantSchema }]),
   ],
   controllers: [ChantsController],
   providers: [ChantsService],

@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseInterceptors,
+  UploadedFiles,
+} from '@nestjs/common';
 import { ChantsService } from './chants.service';
 import { CreateChantDto } from './dto/create-chant.dto';
 import { UpdateChantDto } from './dto/update-chant.dto';
@@ -11,7 +22,7 @@ export class ChantsController {
   constructor(
     private readonly chantsService: ChantsService,
     private cloudinaryService: CloudinaryService,
-  ) { }
+  ) {}
 
   @Post()
   @UseInterceptors(
@@ -27,10 +38,11 @@ export class ChantsController {
       {
         storage: multer.memoryStorage(),
       },
-    )
+    ),
   )
   async create(
-    @UploadedFiles() files: {
+    @UploadedFiles()
+    files: {
       coverImage?: Express.Multer.File[];
       audioUrl?: Express.Multer.File[];
       soprano?: Express.Multer.File[];
@@ -38,7 +50,7 @@ export class ChantsController {
       tenor?: Express.Multer.File[];
       bass?: Express.Multer.File[];
     },
-    @Body() dto: CreateChantDto
+    @Body() dto: CreateChantDto,
   ) {
     const upload = async (file?: Express.Multer.File) => {
       if (!file) return null;
@@ -57,13 +69,13 @@ export class ChantsController {
       alto: await upload(files.alto?.[0]),
       tenor: await upload(files.tenor?.[0]),
       bass: await upload(files.bass?.[0]),
-    }
+    };
 
     const dataToSave = {
       ...dto,
       coverImage,
       audioUrl,
-      voices
+      voices,
     };
 
     console.log(`Data created: ${dataToSave}`);
@@ -100,14 +112,13 @@ export class ChantsController {
       {
         storage: multer.memoryStorage(),
       },
-    )
+    ),
   )
   async update(
     @Param('id') id: string,
     @UploadedFiles() files,
-    @Body() dto: UpdateChantDto
+    @Body() dto: UpdateChantDto,
   ) {
-
     const chant = await this.chantsService.findOne(id);
 
     const upload = async (file?: Express.Multer.File) => {
@@ -125,7 +136,8 @@ export class ChantsController {
       }
     };
 
-    let coverImage: { url: string; public_id: string } | null = chant.coverImage!;
+    let coverImage: { url: string; public_id: string } | null =
+      chant.coverImage!;
     if (files.coverImage?.[0]) {
       await deleteFile(chant.coverImage?.public_id);
       coverImage = await upload(files.coverImage[0]);
@@ -151,7 +163,7 @@ export class ChantsController {
       coverImage,
       audioUrl,
       voices,
-    }
+    };
 
     return this.chantsService.update(id, updateData);
   }
