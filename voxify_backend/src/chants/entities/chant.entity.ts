@@ -17,19 +17,18 @@ export class Chant {
     @Prop()
     lyrics: string;
 
-    @Prop()
-    audioUrl: string;
+    @Prop({type: Object,  default: null})
+    coverImage?: {url: string, public_id: string};
 
-    @Prop()
-    coverImage: string;
-
+    @Prop({type: Object,  default: null})
+    audioUrl?: {url: string, public_id: string};
 
     @Prop({ type: Object })
     voices: {
-        soprano?: string;
-        alto?: string;
-        tenor?: string;
-        bass?: string;
+        soprano?: { url: string, public_id: string };
+        alto?: { url: string, public_id: string };
+        tenor?: { url: string, public_id: string };
+        bass?: { url: string, public_id: string };
     };
 
     @Prop([String])

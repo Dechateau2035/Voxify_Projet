@@ -19,20 +19,4 @@ export class CreateChantDto {
   @IsOptional()
   @IsBoolean()
   isPublished?: boolean;
-
-  /*@IsOptional()
-  @IsString()
-  audioUrl?: string;
-
-  @IsOptional()
-  @IsString()
-  coverImage?: string;
-
-  @IsOptional()
-  voices?: {
-    soprano?: string;
-    alto?: string;
-    tenor?: string;
-    bass?: string;
-  };*/
 }

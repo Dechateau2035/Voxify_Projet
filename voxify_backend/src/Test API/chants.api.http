@@ -3,7 +3,7 @@
 ### ==============================
 
 @baseUrl = http://localhost:3000
-@chantId = 69cca4baeede991acd62b667
+@chantId = 69d9039efeae1ae956d95037
 
 ### 1. CREATE CHANT(simple)
 POST {{baseUrl}}/chants
@@ -49,7 +49,7 @@ Content-Disposition: form-data; name="bass"; filename="bass.mp3"
 --boundary
 Content-Disposition: form-data; name="title"
 
-Amazing Graces
+Yesu Azali
 --boundary
 Content-Disposition: form-data; name="category"
 
@@ -80,7 +80,7 @@ GET {{baseUrl}}/chants/{{chantId}}
 ### 5. GET CHANT BY SLUG
 GET {{baseUrl}}/chants/slug/amazing-grace
 
-### 6. UPDATE CHANT
+### 6. UPDATE CHANT( Simple )
 PATCH {{baseUrl}}/chants/{{chantId}}
 Content-Type: application/json
 
@@ -88,6 +88,46 @@ Content-Type: application/json
   "category": "louange",
   "isPublished": false
 }
+
+### 7. UPDATE CHANT
+PATCH {{baseUrl}}/chants/{{chantId}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="coverImage"; filename="new-image.jpg"
+Content-Type: image/jpeg
+
+< ./new-image.jpg
+--boundary
+Content-Disposition: form-data; name="audioUrl"; filename="new-audio.ogg"
+Content-Type: audio/mpeg
+
+< ./new-audio.ogg
+--boundary
+Content-Disposition: form-data; name="soprano"; filename="new-soprano.mp3"
+
+< ./new-soprano.mp3
+--boundary
+Content-Disposition: form-data; name="title"
+
+Yesu Azali (Remix)
+--boundary
+Content-Disposition: form-data; name="category"
+
+louange
+--boundary
+Content-Disposition: form-data; name="tags[]"
+
+rapide
+--boundary
+Content-Disposition: form-data; name="tags[]"
+
+chorale
+--boundary
+Content-Disposition: form-data; name="isPublished"
+
+false
+--boundary--
 
 ### 7. DELETE CHANT
 DELETE {{baseUrl}}/chants/{{chantId}}

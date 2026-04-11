@@ -19,4 +19,8 @@ export class CloudinaryService {
             upload.end(file.buffer);
         });
     }
+
+    async deleteFile(public_id: string) {
+        return cloudinary.uploader.destroy(public_id);
+    }
 }
