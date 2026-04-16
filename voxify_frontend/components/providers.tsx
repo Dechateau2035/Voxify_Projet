@@ -9,7 +9,7 @@ type ProvidersProps = {
 
 export function Providers({ children }: ProvidersProps) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <div className="flex min-h-dvh flex-1 flex-col">{children}</div>
     </ThemeProvider>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchChants } from "@/lib/api/chants";
+import { getChants } from "@/lib/api";
 import type { Chant } from "@/lib/types";
 
 export function useChants() {
@@ -11,7 +11,7 @@ export function useChants() {
 
   useEffect(() => {
     let active = true;
-    fetchChants()
+    getChants()
       .then((data) => {
         if (!active) return;
         setChants(data);

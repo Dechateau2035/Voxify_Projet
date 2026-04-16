@@ -1,4 +1,4 @@
-import type { Chant } from "@/lib/types";
+import type { Chant, ChantVoice, UploadedMedia, VoicePart } from "@/lib/types";
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -23,7 +23,7 @@ function asObject(value: unknown): UnknownRecord | null {
   return value && typeof value === "object" ? (value as UnknownRecord) : null;
 }
 
-function normalizeUploadedMedia(value: unknown): Chant["audioUrl"] {
+function normalizeUploadedMedia(value: unknown): UploadedMedia | null {
   const obj = asObject(value);
   if (!obj) return null;
   const url = asString(obj.url);
@@ -32,30 +32,46 @@ function normalizeUploadedMedia(value: unknown): Chant["audioUrl"] {
   return { url, public_id };
 }
 
-function normalizeVoiceTracks(value: unknown): Chant["voiceTracks"] {
-  const obj = asObject(value);
-  if (!obj) return {};
-  const soprano = normalizeUploadedMedia(obj.soprano);
-  const alto = normalizeUploadedMedia(obj.alto);
-  const tenor = normalizeUploadedMedia(obj.tenor);
-  const bass = normalizeUploadedMedia(obj.bass);
-  return {
-    soprano: soprano?.url,
-    alto: alto?.url,
-    tenor: tenor?.url,
-    bass: bass?.url,
-  };
+function toVoiceName(part: VoicePart): string {
+  return part.charAt(0).toUpperCase() + part.slice(1);
 }
 
-function normalizeVoices(value: unknown): Chant["voices"] {
+function normalizeVoices(value: unknown): ChantVoice[] {
+  if (Array.isArray(value)) {
+    return value
+      .map((voice, index) => {
+        const obj = asObject(voice);
+        if (!obj) return null;
+        const name = asString(obj.name, `Voix ${index + 1}`);
+        const audio = normalizeUploadedMedia(obj.audio);
+        if (!audio) return null;
+        return {
+          id: `${name.toLowerCase()}-${index}`,
+          name,
+          audio,
+        };
+      })
+      .filter((voice): voice is ChantVoice => voice !== null);
+  }
+
   const obj = asObject(value);
-  if (!obj) return {};
-  return {
-    soprano: normalizeUploadedMedia(obj.soprano),
-    alto: normalizeUploadedMedia(obj.alto),
-    tenor: normalizeUploadedMedia(obj.tenor),
-    bass: normalizeUploadedMedia(obj.bass),
-  };
+  if (!obj) return [];
+
+  const parts: VoicePart[] = ["soprano", "alto", "tenor", "bass"];
+  const normalizedVoices: ChantVoice[] = [];
+
+  parts.forEach((part) => {
+    const audio = normalizeUploadedMedia(obj[part]);
+    if (!audio) return;
+
+    normalizedVoices.push({
+      id: part,
+      name: toVoiceName(part),
+      audio,
+    });
+  });
+
+  return normalizedVoices;
 }
 
 export function normalizeChant(value: unknown): Chant | null {
@@ -80,7 +96,8 @@ export function normalizeChant(value: unknown): Chant | null {
     audioUrl: normalizeUploadedMedia(obj.audioUrl),
     mainAudioUrl: normalizeUploadedMedia(obj.audioUrl)?.url || asString(obj.audio),
     voices: normalizeVoices(obj.voices),
-    voiceTracks: normalizeVoiceTracks(obj.voiceTracks ?? obj.voices),
+    sheetMusic: normalizeUploadedMedia(obj.sheetMusic),
+    sheetMusicUrl: normalizeUploadedMedia(obj.sheetMusic)?.url || asString(obj.sheetMusicUrl || obj.pdf),
     isPublished: Boolean(obj.isPublished),
     createdAt: asString(obj.createdAt),
     plays: typeof obj.plays === "number" ? obj.plays : 0,

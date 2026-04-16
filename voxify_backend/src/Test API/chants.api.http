@@ -2,10 +2,110 @@
 ### CHANTS API TEST FILE (VS CODE REST CLIENT)
 ### ==============================
 
-@baseUrl = http://localhost:3000
+@baseUrl = http://localhost:3001
 @chantId = 69d9039efeae1ae956d95037
 
-### 1. CREATE CHANT(simple)
+### 1. CREATE CHANT (multipart complet: cover + audio + sheet + voices dynamiques)
+POST {{baseUrl}}/chants
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="coverImage"; filename="cover.jpg"
+Content-Type: image/jpeg
+
+< ./cover.jpg
+--boundary
+Content-Disposition: form-data; name="audio"; filename="main.mp3"
+Content-Type: audio/mpeg
+
+< ./main.mp3
+--boundary
+Content-Disposition: form-data; name="sheetMusic"; filename="partition.pdf"
+Content-Type: application/pdf
+
+< ./partition.pdf
+
+--boundary
+Content-Disposition: form-data; name="voices[0][name]"
+
+soprano
+--boundary
+Content-Disposition: form-data; name="voices[0][file]"; filename="soprano.mp3"
+Content-Type: audio/mpeg
+
+< ./soprano.mp3
+
+--boundary
+Content-Disposition: form-data; name="voices[1][name]"
+
+alto
+--boundary
+Content-Disposition: form-data; name="voices[1][file]"; filename="alto.mp3"
+Content-Type: audio/mpeg
+
+< ./alto.mp3
+
+--boundary
+Content-Disposition: form-data; name="voices[2][name]"
+
+tenor
+--boundary
+Content-Disposition: form-data; name="voices[2][file]"; filename="tenor.mp3"
+Content-Type: audio/mpeg
+
+< ./tenor.mp3
+
+--boundary
+Content-Disposition: form-data; name="title"
+
+Amazing
+--boundary
+Content-Disposition: form-data; name="category"
+
+adoration
+--boundary
+Content-Disposition: form-data; name="lyrics"
+
+Encore une fois, je dois y croire
+Au loin, je vois lueur d'espoir
+Tant d'vérité à éviter le temps d'un songe
+Parfois la nuit, j'entends l'orage se rapprocher (Se rapprocher)
+Un jour, je m'en irai pour mieux me retrouver (Retrouver)
+C'est un long trajet, j'ai vagabondé, mais pour aller où?
+J'ai pris des crochets sans même riposter, il pleut des coups
+Ouh, ouh, ouh, ouh, ouh, ouh, ouh, ouh
+Ouh, ouh, ouh, ouh, ouh, ouh, ouh, ouh
+Comme si l'espace se refermait, j'ai pris un nouveau départ
+Comme si l'épreuve était passée, j'ai vu la lune dans le noir
+Un jour le temps est mon allié, un jour le temps nous sépare
+Me soigner, j'ai bien essayé, mais y a qu'le temps qui répare
+C'est un long trajet, j'ai vagabondé, mais pour aller où? (Pour aller où?)
+J'ai pris des crochets sans même riposter, il pleut des coups (Il pleut des coups)
+Ouh, ouh, ouh, ouh, ouh, ouh, ouh, ouh
+Ouh, ouh, ouh, ouh, ouh, ouh, ouh, ouh
+Parfois la nuit, j'entends l'orage se rapprocher (Se rapprocher)
+Un jour, je m'en irai pour mieux me retrouver (Retrouver)
+C'est un long trajet, j'ai vagabondé, mais pour aller où? (Pour aller où?)
+J'ai pris des crochets sans même riposter, il pleut des coups (Il pleut des coups)
+C'est un long trajet, j'ai vagabondé, mais pour aller où? (Pour aller où?)
+J'ai pris des crochets sans même riposter, il pleut des coups (Il pleut des coups)
+Eh, eh, eh, eh, eh, eh (Ouh, ouh, ouh, ouh, ouh, ouh, ouh, ouh)
+Eh, eh, eh, eh, eh, eh (Ouh, ouh, ouh, ouh, ouh, ouh, ouh, ouh)
+--boundary
+Content-Disposition: form-data; name="tags[]"
+
+lent
+--boundary
+Content-Disposition: form-data; name="tags[]"
+
+classique
+--boundary
+Content-Disposition: form-data; name="isPublished"
+
+true
+--boundary--
+
+### 2. CREATE CHANT (simple JSON - sans fichiers)
 POST {{baseUrl}}/chants
 Content-Type: application/json
 
@@ -16,7 +116,7 @@ Content-Type: application/json
   "isPublished": true
 }
 
-### 2. CREATE CHANT( avec les medias )
+### 3. CREATE CHANT (multipart - nouveau format, sans voix fixes)
 POST {{baseUrl}}/chants
 Content-Type: multipart/form-data; boundary=boundary
 
@@ -26,26 +126,33 @@ Content-Type: image/jpeg
 
 < ./yess.jpg
 --boundary
-Content-Disposition: form-data; name="audioUrl"; filename="audio.ogg"
-Content-Type: audio/mpeg
+Content-Disposition: form-data; name="audio"; filename="audio.ogg"
+Content-Type: audio/ogg
 
 < ./audio.ogg
 --boundary
-Content-Disposition: form-data; name="soprano"; filename="soprano.mp3"
+Content-Disposition: form-data; name="sheetMusic"; filename="partition.pdf"
+Content-Type: application/pdf
+
+< ./partition.pdf
+--boundary
+Content-Disposition: form-data; name="voices[0][name]"
+
+soprano
+--boundary
+Content-Disposition: form-data; name="voices[0][file]"; filename="soprano.mp3"
+Content-Type: audio/mpeg
 
 < ./soprano.mp3
 --boundary
-Content-Disposition: form-data; name="alto"; filename="alto.mp3"
+Content-Disposition: form-data; name="voices[1][name]"
+
+alto
+--boundary
+Content-Disposition: form-data; name="voices[1][file]"; filename="alto.mp3"
+Content-Type: audio/mpeg
 
 < ./alto.mp3
---boundary
-Content-Disposition: form-data; name="tenor"; filename="tenor.mp3"
-
-< ./tenor.mp3
---boundary
-Content-Disposition: form-data; name="bass"; filename="bass.mp3"
-
-< ./bass.mp3
 --boundary
 Content-Disposition: form-data; name="title"
 
@@ -68,19 +175,25 @@ Content-Disposition: form-data; name="isPublished"
 true
 --boundary--
 
-### 3. GET ALL CHANTS
+### 4. GET ALL CHANTS
 GET {{baseUrl}}/chants
 
-### 4. FILTER CHANTS
+### 5. FILTER CHANTS (category + tag + published)
 GET {{baseUrl}}/chants?category=louange&tag=classique&isPublished=true
 
-### 5. GET CHANT BY ID
+### 5bis. SEARCH CHANTS (text index: title + lyrics)
+GET {{baseUrl}}/chants?search=grace
+
+### 5ter. FILTER CHANTS (isActive)
+GET {{baseUrl}}/chants?isActive=true
+
+### 6. GET CHANT BY ID
 GET {{baseUrl}}/chants/{{chantId}}
 
-### 5. GET CHANT BY SLUG
+### 7. GET CHANT BY SLUG
 GET {{baseUrl}}/chants/slug/amazing-grace
 
-### 6. UPDATE CHANT( Simple )
+### 8. UPDATE CHANT (Simple JSON)
 PATCH {{baseUrl}}/chants/{{chantId}}
 Content-Type: application/json
 
@@ -89,7 +202,7 @@ Content-Type: application/json
   "isPublished": false
 }
 
-### 7. UPDATE CHANT
+### 9. UPDATE CHANT (multipart - remplace cover + audio + 1 voice + sheetMusic)
 PATCH {{baseUrl}}/chants/{{chantId}}
 Content-Type: multipart/form-data; boundary=boundary
 
@@ -99,12 +212,22 @@ Content-Type: image/jpeg
 
 < ./new-image.jpg
 --boundary
-Content-Disposition: form-data; name="audioUrl"; filename="new-audio.ogg"
-Content-Type: audio/mpeg
+Content-Disposition: form-data; name="audio"; filename="new-audio.ogg"
+Content-Type: audio/ogg
 
 < ./new-audio.ogg
 --boundary
-Content-Disposition: form-data; name="soprano"; filename="new-soprano.mp3"
+Content-Disposition: form-data; name="sheetMusic"; filename="new-partition.pdf"
+Content-Type: application/pdf
+
+< ./new-partition.pdf
+--boundary
+Content-Disposition: form-data; name="voices[0][name]"
+
+soprano
+--boundary
+Content-Disposition: form-data; name="voices[0][file]"; filename="new-soprano.mp3"
+Content-Type: audio/mpeg
 
 < ./new-soprano.mp3
 --boundary
@@ -129,5 +252,5 @@ Content-Disposition: form-data; name="isPublished"
 false
 --boundary--
 
-### 7. DELETE CHANT
+### 10. DELETE CHANT
 DELETE {{baseUrl}}/chants/{{chantId}}

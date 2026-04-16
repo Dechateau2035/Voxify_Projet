@@ -1,15 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { ChantCard } from "@/components/chant-card";
 import { FilterPanel } from "@/components/filter-panel";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useChants } from "@/hooks/use-chants";
 
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 9;
 
 export default function ChantsPage() {
   const { chants, loading, error } = useChants();
@@ -18,29 +17,31 @@ export default function ChantsPage() {
   const [tag, setTag] = useState("");
   const [page, setPage] = useState(1);
 
-  const categories = useMemo(() => [...new Set(chants.map((c) => c.category))], [chants]);
-  const tags = useMemo(() => [...new Set(chants.flatMap((c) => c.tags ?? []))], [chants]);
+  const categories = useMemo(() => [...new Set(chants.map((chant) => chant.category).filter(Boolean))], [chants]);
+  const tags = useMemo(() => [...new Set(chants.flatMap((chant) => chant.tags ?? []).filter(Boolean))], [chants]);
 
   const filtered = useMemo(() => {
     return chants.filter((chant) => {
-      const matchesSearch = chant.title.toLowerCase().includes(search.toLowerCase());
+      const matchesSearch =
+        !search ||
+        chant.title.toLowerCase().includes(search.toLowerCase()) ||
+        chant.tags.some((item) => item.toLowerCase().includes(search.toLowerCase()));
       const matchesCategory = !category || chant.category === category;
-      const matchesTag = !tag || chant.tags?.includes(tag);
+      const matchesTag = !tag || chant.tags.includes(tag);
       return matchesSearch && matchesCategory && matchesTag;
     });
-  }, [chants, search, category, tag]);
+  }, [category, chants, search, tag]);
 
   const paginated = filtered.slice(0, page * PAGE_SIZE);
   const hasMore = paginated.length < filtered.length;
 
   return (
-    <AppShell title="Bibliotheque des chants" subtitle="Filtrez, recherchez et explorez rapidement.">
+    <AppShell
+      title="Bibliotheque des chants"
+      subtitle="Explore rapidement les chants de la chorale avec une grille moderne, un filtrage simple et une navigation fluide."
+    >
       {error ? <p className="mb-4 text-sm text-destructive">{error}</p> : null}
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:justify-end">
-        <Link href="/chants/new" className="w-full sm:w-auto sm:shrink-0">
-          <Button className="w-full sm:w-auto">Ajouter un chant</Button>
-        </Link>
-      </div>
+
       <div className="mb-6">
         <FilterPanel
           search={search}
@@ -48,24 +49,32 @@ export default function ChantsPage() {
           tag={tag}
           categories={categories}
           tags={tags}
-          onSearchChange={setSearch}
-          onCategoryChange={setCategory}
-          onTagChange={setTag}
+          onSearchChange={(value) => {
+            setSearch(value);
+            setPage(1);
+          }}
+          onCategoryChange={(value) => {
+            setCategory(value);
+            setPage(1);
+          }}
+          onTagChange={(value) => {
+            setTag(value);
+            setPage(1);
+          }}
         />
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {loading
-          ? Array.from({ length: 8 }).map((_, i) => <Skeleton key={i} className="h-60 rounded-2xl" />)
+          ? Array.from({ length: 9 }).map((_, index) => <Skeleton key={index} className="h-72 rounded-[28px]" />)
           : paginated.map((chant) => <ChantCard key={chant.id} chant={chant} />)}
       </div>
+
       {!loading && hasMore ? (
         <div className="mt-8 flex justify-center">
-          <button
-            className="rounded-md border border-border/60 bg-secondary px-4 py-2 text-sm"
-            onClick={() => setPage((p) => p + 1)}
-          >
+          <Button variant="secondary" className="rounded-full" onClick={() => setPage((current) => current + 1)}>
             Charger plus
-          </button>
+          </Button>
         </div>
       ) : null}
     </AppShell>

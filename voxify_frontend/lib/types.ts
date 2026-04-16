@@ -5,6 +5,12 @@ export type UploadedMedia = {
   public_id: string;
 };
 
+export type ChantVoice = {
+  id: string;
+  name: string;
+  audio: UploadedMedia;
+};
+
 export type Chant = {
   id: string;
   title: string;
@@ -12,12 +18,13 @@ export type Chant = {
   category: string;
   tags: string[];
   coverImage?: UploadedMedia | null;
+  coverUrl?: string;
   lyrics?: string;
   audioUrl?: UploadedMedia | null;
-  voices?: Partial<Record<VoicePart, UploadedMedia | null>>;
-  coverUrl?: string;
   mainAudioUrl?: string;
-  voiceTracks?: Partial<Record<VoicePart, string>>;
+  voices: ChantVoice[];
+  sheetMusic?: UploadedMedia | null;
+  sheetMusicUrl?: string;
   isPublished?: boolean;
   createdAt?: string;
   plays?: number;

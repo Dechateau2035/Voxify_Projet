@@ -28,8 +28,10 @@ export class UploadController {
     const result = await this.cloudinaryService.uploadFile(file);
 
     return {
-      url: result.secure_url,
+      url: result.url,
       public_id: result.public_id,
+      duration: result.duration,
+      format: result.format,
     };
   }
 }

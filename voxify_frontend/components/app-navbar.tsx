@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Heart, LayoutDashboard, Menu, Music2, UserRound } from "lucide-react";
+import { LayoutGrid, Menu, Music2, Shield, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -18,18 +18,20 @@ import {
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 
 const links = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/", label: "Accueil", icon: LayoutGrid },
   { href: "/chants", label: "Chants", icon: Music2 },
-  { href: "/favorites", label: "Favoris", icon: Heart },
+  { href: "/admin/chants", label: "Admin", icon: Shield },
 ];
 
 export function AppNavbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const isActive = (href: string) => pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
+
   return (
-    <header className="sticky top-0 z-30 border-b border-border/60 bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/70">
-      <div className="mx-auto flex h-14 w-full max-w-7xl items-center gap-2 px-3 sm:h-16 sm:gap-3 sm:px-4">
+    <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/65">
+      <div className="mx-auto flex h-16 w-full max-w-7xl items-center gap-2 px-3 sm:gap-3 sm:px-4">
         <Link
           href="/"
           className="flex min-w-0 shrink-0 items-center rounded-md outline-none ring-offset-background transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -44,16 +46,13 @@ export function AppNavbar() {
             priority
           />
         </Link>
-        <nav
-          className="hidden min-w-0 flex-1 items-center justify-center gap-1 md:flex lg:gap-2"
-          aria-label="Navigation principale"
-        >
+        <nav className="hidden min-w-0 flex-1 items-center justify-center gap-2 md:flex" aria-label="Navigation principale">
           {links.map(({ href, label, icon: Icon }) => (
             <Link key={href} href={href}>
               <Button
-                variant="ghost"
+                variant={isActive(href) ? "secondary" : "ghost"}
                 size="sm"
-                className={cn("gap-2", pathname === href && "bg-primary/15 text-primary")}
+                className={cn("gap-2 rounded-full px-4", isActive(href) && "bg-primary/15 text-primary")}
               >
                 <Icon className="size-4 shrink-0" />
                 {label}
@@ -76,17 +75,15 @@ export function AppNavbar() {
             </Button>
             <DialogContent variant="drawer" className="border-l">
               <DialogTitle className="sr-only">Menu de navigation</DialogTitle>
-              <DialogDescription className="sr-only">
-                Accédez au tableau de bord, à la bibliothèque et aux favoris.
-              </DialogDescription>
+              <DialogDescription className="sr-only">Accedez rapidement aux pages principales de Voxify.</DialogDescription>
               <nav className="flex flex-col gap-1 px-4 pb-6 pt-14" aria-label="Navigation mobile">
                 {links.map(({ href, label, icon: Icon }) => (
                   <Link key={href} href={href} onClick={() => setMobileOpen(false)}>
                     <Button
-                      variant="ghost"
+                      variant={isActive(href) ? "secondary" : "ghost"}
                       className={cn(
                         "h-11 w-full justify-start gap-3 text-base",
-                        pathname === href && "bg-primary/15 text-primary",
+                        isActive(href) && "bg-primary/15 text-primary",
                       )}
                     >
                       <Icon className="size-5 shrink-0" />
@@ -107,6 +104,9 @@ export function AppNavbar() {
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              <DropdownMenuItem>
+                <Link href="/admin/chants">Administration</Link>
+              </DropdownMenuItem>
               <DropdownMenuItem>
                 <Link href="/login">Se connecter</Link>
               </DropdownMenuItem>
